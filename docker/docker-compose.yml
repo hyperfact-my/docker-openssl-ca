@@ -1,8 +1,10 @@
 version: '3'
 
 services:
-  docker:
+  ca:
     image: openssl-ca:latest
     build: .
+    tty: true
     volumes: 
-      - "./ca:/ca"
+      # - "./ca:/ca"
+      - "./certs:/certs"

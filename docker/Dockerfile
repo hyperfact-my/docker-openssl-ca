@@ -6,7 +6,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && apk --no-cache add tzdata \
     && cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
-    && apk del tzdata
+    && apk del tzdata \
+    && echo 'alias ll="ls $LS_OPTIONS -l"' >> ~/.rc
 RUN apk --no-cache add openssl
 ADD aliases.sh /etc/profile.d/aliases.sh
 
