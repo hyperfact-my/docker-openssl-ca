@@ -29,5 +29,6 @@ chmod -v 0400 ${arg_name}.key.pem
 chmod -v 0444 ${arg_name}.cert.pem
 
 # clean
+rm -f ${arg_name}.csr
 
 cp -f /ca/ca.pem ./
