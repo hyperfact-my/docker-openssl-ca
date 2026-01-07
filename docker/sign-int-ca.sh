@@ -20,15 +20,21 @@ openssl ecparam -name prime256v1 -genkey -noout -out ${arg_name}.key.pem
 openssl req -sha256 -new -key ${arg_name}.key.pem -out ${arg_name}.csr \
     -subj "/C=${COUNTRY}/ST=${STATE}/L=${CITY}/O=${ORGANIZATION}/OU=${ORGANIZATIONAL_UNIT}/CN=${COMMON_NAME}/emailAddress=${EMAIL}"
 
+# create extfile
+echo "basicConstraints = critical, CA:true, pathlen:0" > int-ca-extfile.cnf
+echo "keyUsage = critical, digitalSignature, cRLSign, keyCertSign" >> int-ca-extfile.cnf
+echo "subjectKeyIdentifier = hash" >> int-ca-extfile.cnf
+echo "authorityKeyIdentifier = keyid:always,issuer" >> int-ca-extfile.cnf
+
 # sign
 openssl x509 -req -days ${arg_days} -sha256 -in ${arg_name}.csr -CA /ca/ca.pem -CAkey /ca/ca.key.pem \
-    -CAcreateserial -out ${arg_name}.cert.pem -extensions v3_ca
+    -CAcreateserial -out ${arg_name}.cert.pem -extfile int-ca-extfile.cnf
 
 # access
 chmod -v 0400 ${arg_name}.key.pem
 chmod -v 0444 ${arg_name}.cert.pem
 
 # clean
-rm -f ${arg_name}.csr
+rm -f int-ca-extfile.cnf ${arg_name}.csr
 
 cp -f /ca/ca.pem ./
